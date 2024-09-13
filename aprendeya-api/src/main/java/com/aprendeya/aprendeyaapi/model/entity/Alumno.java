@@ -1,0 +1,33 @@
+package com.aprendeya.aprendeyaapi.model.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "alumnos")
+
+public class Alumno {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_alumno")
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)  // Clave foránea referenciada a Usuario
+    private Usuario usuario;
+
+    @Column(name = "grado", nullable = false, length = 15)
+    private String grado;
+}
+
+
+
+
+
+
+
+
+
+
