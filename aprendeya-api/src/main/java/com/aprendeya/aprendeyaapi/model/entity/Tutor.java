@@ -3,6 +3,8 @@ package com.aprendeya.aprendeyaapi.model.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "tutores")
 @Data
@@ -24,5 +26,5 @@ public class Tutor {
     private Integer experiencia;
 
     @Column(name = "tarifa_base", nullable = false)
-    private Float tarifaBase;
+    private BigDecimal tarifaBase;
 }

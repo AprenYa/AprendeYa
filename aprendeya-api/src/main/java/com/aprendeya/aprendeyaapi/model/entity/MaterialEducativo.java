@@ -1,5 +1,6 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
+import com.aprendeya.aprendeyaapi.model.enums.TipoMaterial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,9 +42,5 @@ public class MaterialEducativo {
     @Column(name = "fecha_subida", nullable = false)
     private LocalDate fechaSubida;
 
-    public enum TipoMaterial {
-        DOCUMENTO,
-        VIDEO,
-        OTRO
-    }
+
 }

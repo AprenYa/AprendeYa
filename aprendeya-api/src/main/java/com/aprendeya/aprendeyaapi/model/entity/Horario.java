@@ -1,11 +1,6 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -18,10 +13,13 @@ public class Horario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_horario")
-    private Integer id;
+    private Integer idHorario;
+    @ManyToOne
+    @JoinColumn(name = "id_tutor", nullable = false)
+    private Tutor tutor;
 
-    @Column(name = "dia", nullable = false, length = 9)
-    private String dia;
+    @Column(name = "dia_semana", nullable = false, length = 9)
+    private String diaSemana;
 
     @Column(name = "hora_inicio", nullable = false)
     private LocalTime horaInicio;

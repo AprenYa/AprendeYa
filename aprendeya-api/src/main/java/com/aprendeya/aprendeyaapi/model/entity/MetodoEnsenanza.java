@@ -9,7 +9,7 @@ import jakarta.persistence.Column;
 import lombok.Data;
 
 @Entity
-@Table(name = "metodos_ensenanza")
+@Table(name = "metodo_ensenanza")
 @Data
 public class MetodoEnsenanza {
 
@@ -18,7 +18,7 @@ public class MetodoEnsenanza {
     @Column(name = "id_metodo_ensenanza")
     private Integer idMetodoEnsenanza;
 
-    @Column(name = "nombre_metodo", nullable = false, unique = true, length = 100)
+    @Column(name = "nombre_metodo", nullable = false, unique = true)
     private String nombreMetodo;
 
     @Column(name = "descripcion", columnDefinition = "TEXT")
