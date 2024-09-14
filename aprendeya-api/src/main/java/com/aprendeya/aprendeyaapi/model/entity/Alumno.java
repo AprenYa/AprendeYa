@@ -12,7 +12,7 @@ public class Alumno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_alumno")
-    private Integer id;
+    private Integer idAlumno;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)  // Clave foránea referenciada a Usuario

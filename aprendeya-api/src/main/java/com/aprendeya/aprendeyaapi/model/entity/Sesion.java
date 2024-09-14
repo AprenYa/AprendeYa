@@ -1,5 +1,6 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
+import com.aprendeya.aprendeyaapi.model.enums.TipoSesion;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ public class Sesion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sesion")
-    private Integer id;
+    private Integer idSesion;
 
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
@@ -42,10 +43,6 @@ public class Sesion {
     @Column(name = "capacidad")
     private Integer capacidad;
 
-    @Column(name = "fecha_sesion", nullable = false)
-    private LocalDateTime fecha_sesion;
 
-    public enum TipoSesion {
-        INDIVIDUAL, GRUPAL
-    }
+
 }

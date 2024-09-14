@@ -1,5 +1,6 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
+import com.aprendeya.aprendeyaapi.model.enums.EstadoAsistencia;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ public class Asistencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_asistencia")
-    private Integer id;
+    private Integer idAsistencia;
 
     @ManyToOne
     @JoinColumn(name = "id_sesion", nullable = false)
@@ -25,10 +26,7 @@ public class Asistencia {
     private LocalDateTime fecha;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
     private EstadoAsistencia estado;
-    public enum EstadoAsistencia {
-        PRESENTE, AUSENTE
-    }
+
 
 }

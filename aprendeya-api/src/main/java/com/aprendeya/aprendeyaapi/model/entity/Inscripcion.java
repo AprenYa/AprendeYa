@@ -1,13 +1,6 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -20,7 +13,7 @@ public class Inscripcion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_inscripcion")
-    private Integer id;
+    private Integer idInscripcion;
 
     @ManyToOne
     @JoinColumn(name = "id_curso", nullable = false)
@@ -37,6 +30,7 @@ public class Inscripcion {
     @ManyToOne
     @JoinColumn(name = "id_pago", nullable = false)
     private Pago pago;
+
 
     @Column(name = "fecha_inscripcion", nullable = false)
     private LocalDate fechaInscripcion;

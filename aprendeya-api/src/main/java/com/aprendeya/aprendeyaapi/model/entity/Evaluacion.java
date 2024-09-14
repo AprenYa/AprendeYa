@@ -19,7 +19,7 @@ public class Evaluacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_evaluacion")
-    private Integer id;
+    private Integer idEvaluacion;
 
     @ManyToOne
     @JoinColumn(name = "id_sesion", nullable = false)

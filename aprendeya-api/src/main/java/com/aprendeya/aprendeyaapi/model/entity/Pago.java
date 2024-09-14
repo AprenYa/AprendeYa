@@ -1,9 +1,11 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
+import com.aprendeya.aprendeyaapi.model.enums.EstadoPago;
 import jakarta.persistence.*;
 import lombok.Data;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -25,7 +27,7 @@ public class Pago {
     private Tutor tutor;
 
     @Column(name = "monto", nullable = false, precision = 10, scale = 2)
-    private Float monto;
+    private BigDecimal monto;
 
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -34,9 +36,4 @@ public class Pago {
     @Column(name = "fecha_pago", nullable = false)
     private LocalDate fechaPago;
 
-    public enum EstadoPago {
-        PENDIENTE,
-        COMPLETADO,
-        CANCELADO
-    }
 }
