@@ -1,4 +1,4 @@
 package com.aprendeya.aprendeyaapi.mapper;
 
-public class CategoryMapper {
+public class BusquedaTutorMapper {
 }

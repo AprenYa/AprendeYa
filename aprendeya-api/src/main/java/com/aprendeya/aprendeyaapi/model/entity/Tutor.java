@@ -27,4 +27,6 @@ public class Tutor {
 
     @Column(name = "tarifa_base", nullable = false)
     private BigDecimal tarifaBase;
+
+
 }

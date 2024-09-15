@@ -1,4 +1,4 @@
 package com.aprendeya.aprendeyaapi.api;
 
-public class AdminCategoryController {
+public class BusquedaTutorController {
 }
