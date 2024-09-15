@@ -1,4 +1,4 @@
 package com.aprendeya.aprendeyaapi.exception;
 
-public class pruebaexception {
+public class exampleexception {
 }
