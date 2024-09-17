@@ -18,8 +18,11 @@ public class Alumno {
     @JoinColumn(name = "id_usuario", nullable = false)  // Clave foránea referenciada a Usuario
     private Usuario usuario;
 
-    @Column(name = "grado", nullable = false, length = 15)
+    @Column(name = "grado", nullable = false)
     private String grado;
+
+    @Column(name = "descripcion", nullable = false)
+    private String descripcion;
 }
 
 
