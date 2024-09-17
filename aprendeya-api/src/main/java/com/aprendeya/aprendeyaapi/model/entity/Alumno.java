@@ -20,7 +20,11 @@ public class Alumno {
 
     @Column(name = "grado", nullable = false, length = 15)
     private String grado;
+
+    @Column(name = "descripcion", length = 200)
+    private String descripcion;
 }
+
 
 
 
