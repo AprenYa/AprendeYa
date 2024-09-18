@@ -13,9 +13,12 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "ValoracionesTutores")
+@Table(name = "valoracionestutores")
 @Data
 public class ValoracionTutor {
+    @ManyToOne
+    @JoinColumn(name = "id_sesion", nullable = false)
+    private Sesion sesion;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,7 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
+import com.aprendeya.aprendeyaapi.model.enums.EstadoInscripcion;
+import com.aprendeya.aprendeyaapi.model.enums.EstadoPago;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,7 +33,11 @@ public class Inscripcion {
     @JoinColumn(name = "id_pago", nullable = false)
     private Pago pago;
 
-
     @Column(name = "fecha_inscripcion", nullable = false)
     private LocalDate fechaInscripcion;
+
+
+    @Column(name = "estado_inscripcion", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EstadoInscripcion estado_inscripcion;
 }

@@ -12,7 +12,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Evaluaciones")
+@Table(name = "evaluaciones")
 @Data
 public class Evaluacion {
 
