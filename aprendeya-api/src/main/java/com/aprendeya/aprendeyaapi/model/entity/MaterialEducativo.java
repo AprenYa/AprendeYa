@@ -16,7 +16,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "MaterialesEducativos")
+@Table(name = "materialeseducativos")
 @Data
 public class MaterialEducativo {
 

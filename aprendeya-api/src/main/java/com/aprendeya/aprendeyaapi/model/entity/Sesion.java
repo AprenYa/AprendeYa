@@ -43,6 +43,4 @@ public class Sesion {
     @Column(name = "capacidad")
     private Integer capacidad;
 
-
-
 }
