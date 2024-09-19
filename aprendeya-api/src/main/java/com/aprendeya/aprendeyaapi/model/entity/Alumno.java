@@ -23,7 +23,11 @@ public class Alumno {
 
     @Column(name = "descripcion", nullable = false)
     private String descripcion;
+
+    @Column(name = "familiar", nullable = false)
+    private boolean familiar;
 }
+
 
 
 
