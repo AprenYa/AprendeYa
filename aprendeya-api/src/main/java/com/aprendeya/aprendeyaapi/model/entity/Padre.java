@@ -27,4 +27,5 @@ public class Padre {
     @ManyToOne
     @JoinColumn(name = "id_alumno", nullable = false)
     private Alumno alumno;
+
 }

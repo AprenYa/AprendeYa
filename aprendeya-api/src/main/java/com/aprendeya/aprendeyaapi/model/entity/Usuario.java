@@ -1,5 +1,6 @@
 package com.aprendeya.aprendeyaapi.model.entity;
 
+import com.aprendeya.aprendeyaapi.model.enums.TipoUsuario;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +26,9 @@ public class Usuario {
     @Column(name = "contrasena", nullable = false)
     private String contrasena;
 
+    @Column(name = "tipo_usuario")
+    @Enumerated(EnumType.STRING)
+    private TipoUsuario tipoUsuario;
 
 
 }
