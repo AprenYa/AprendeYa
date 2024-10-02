@@ -1,15 +1,20 @@
 package com.aprendeya.aprendeyaapi.service.impl;
 
 import com.aprendeya.aprendeyaapi.dto.UsuarioRegistroDTO;
+import com.aprendeya.aprendeyaapi.exception.TipoUsuarioNoValidoException;
+import com.aprendeya.aprendeyaapi.exception.UsuarioYaRegistradoException;
+import com.aprendeya.aprendeyaapi.exception.AlumnoNoValidoException;
 import com.aprendeya.aprendeyaapi.model.entity.Alumno;
 import com.aprendeya.aprendeyaapi.model.entity.Padre;
 import com.aprendeya.aprendeyaapi.model.entity.Tutor;
 import com.aprendeya.aprendeyaapi.model.entity.Usuario;
 import com.aprendeya.aprendeyaapi.model.enums.TipoUsuario;
+import com.aprendeya.aprendeyaapi.mapper.UsuarioMapper;
 import com.aprendeya.aprendeyaapi.repository.*;
 import com.aprendeya.aprendeyaapi.service.UsuarioService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -19,20 +24,25 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final StudentRepository studentRepository;
     private final PadreRepository padreRepository;
     private final aTutorRepository aTutorRepository;
+    private final UsuarioMapper usuarioMapper; // Inyectar el mapper
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
     public Usuario registerUser(UsuarioRegistroDTO registroDTO) {
         if (usuarioRepository.existsByEmail(registroDTO.getEmail())) {
-            throw new RuntimeException("El email ya está registrado");
+            throw new UsuarioYaRegistradoException();
         }
-
-        Usuario newUser = new Usuario();
-        newUser.setNombre(registroDTO.getNombre());
-        newUser.setApellido(registroDTO.getApellido());
-        newUser.setEmail(registroDTO.getEmail());
-        newUser.setContrasena(registroDTO.getContrasena());
-        newUser.setTipoUsuario(TipoUsuario.valueOf(registroDTO.getTipoUsuario()));
+        try {
+            TipoUsuario tipoUsuario = TipoUsuario.valueOf(registroDTO.getTipoUsuario());
+        } catch (IllegalArgumentException e) {
+            throw new TipoUsuarioNoValidoException();
+        }
+        // Codifica la contraseña usando el PasswordEncoder inyectado
+        String encodedPassword = passwordEncoder.encode(registroDTO.getContrasena());
+        registroDTO.setContrasena(encodedPassword);
+        // Usar el mapper para convertir el DTO a entidad
+        Usuario newUser = usuarioMapper.toEntity(registroDTO);
         newUser = usuarioRepository.save(newUser);
 
         switch (newUser.getTipoUsuario()) {
@@ -41,16 +51,16 @@ public class UsuarioServiceImpl implements UsuarioService {
                 alumno.setUsuario(newUser);
                 alumno.setGrado(registroDTO.getGrado());
                 alumno.setDescripcion(registroDTO.getDescripcion());
-                alumno.setFamiliar(false); // Asumimos que el estudiante no es familiar
+                alumno.setFamiliar(false);
                 studentRepository.save(alumno);
                 break;
 
             case FAMILIAR:
                 Padre padre = new Padre();
                 padre.setUsuario(newUser);
-                Integer idAlumno = registroDTO.getIdAlumno(); // Obtener el ID del alumno del DTO
+                Integer idAlumno = registroDTO.getIdAlumno();
                 Alumno alumnoExistente = studentRepository.findById(idAlumno)
-                        .orElseThrow(() -> new RuntimeException("El ID del alumno no es válido"));
+                        .orElseThrow(AlumnoNoValidoException::new);
                 padre.setAlumno(alumnoExistente);
                 padreRepository.save(padre);
                 break;
@@ -65,7 +75,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 break;
 
             default:
-                throw new RuntimeException("Tipo de usuario no válido");
+                throw new TipoUsuarioNoValidoException();
         }
 
         return newUser;
