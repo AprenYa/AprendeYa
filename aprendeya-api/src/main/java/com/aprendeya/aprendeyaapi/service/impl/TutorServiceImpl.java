@@ -1,5 +1,6 @@
 package com.aprendeya.aprendeyaapi.service.impl;
 
+import com.aprendeya.aprendeyaapi.dto.CustomTutorPerfilDTO;
 import com.aprendeya.aprendeyaapi.dto.HorarioDTO;
 import com.aprendeya.aprendeyaapi.dto.TutorPerfilDTO;
 import com.aprendeya.aprendeyaapi.dto.ValoracionDTO;
@@ -45,10 +46,8 @@ public class TutorServiceImpl implements TutorServices {
 
     @Override
     public List<TutorPerfilDTO> findTutoresByFilters(String especialidad, Integer experiencia, BigDecimal tarifaBase) {
-        // Obtiene todos los tutores
         List<Tutor> tutores = tutorRepository.findAll();
 
-        // Aplica los filtros condicionalmente
         if (especialidad != null && !especialidad.isEmpty()) {
             tutores = tutores.stream()
                     .filter(tutor -> tutor.getEspecialidad().equalsIgnoreCase(especialidad))
@@ -67,13 +66,69 @@ public class TutorServiceImpl implements TutorServices {
                     .collect(Collectors.toList());
         }
 
-        // Convertir la lista de tutores a DTO
         return tutores.stream()
                 .map(this::convertToPerfilDTO)
                 .collect(Collectors.toList());
     }
+    @Override
+    public CustomTutorPerfilDTO actualizarPerfil(Integer idTutor, CustomTutorPerfilDTO tutorPerfilDTO) {
+        Tutor tutor = tutorRepository.findById(idTutor)
+                .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
+
+        tutor.setEspecialidad(tutorPerfilDTO.getEspecialidad());
+        tutor.setExperiencia(tutorPerfilDTO.getExperiencia());
+        tutor.setTarifaBase(tutorPerfilDTO.getTarifaBase()); // Aquí es importante que el valor no sea nulo.
+
+        tutorRepository.save(tutor);
+        actualizarHorarios(tutor.getIdTutor(), tutorPerfilDTO.getHorarios());
+
+        return convertToCustomPerfil(tutor);
+    }
 
 
+
+    public void actualizarHorarios(Integer idTutor, List<HorarioDTO> horariosDTO) {
+        Tutor tutor = tutorRepository.findById(idTutor)
+                .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
+
+        // Eliminar los horarios existentes
+        horarioRepository.deleteByTutorIdTutor(tutor.getIdTutor());
+
+
+        // Agregar los nuevos horarios
+        for (HorarioDTO horarioDTO : horariosDTO) {
+
+            if (horarioDTO.getDiaSemana() == null) {
+                throw new RuntimeException("El día de la semana no puede ser nulo");
+            }
+            Horario horario = new Horario();
+            horario.setDiaSemana(horarioDTO.getDiaSemana());
+            horario.setHoraInicio(horarioDTO.getHoraInicio());
+            horario.setHoraFin(horarioDTO.getHoraFin());
+            horario.setTutor(tutor);  // Asociar el horario al tutor
+            horarioRepository.save(horario);
+        }
+    }
+
+    @Override
+    public TutorPerfilDTO obtenerPerfil(Integer idTutor) {
+        Tutor tutor = tutorRepository.findById(idTutor)
+                .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
+        return convertToPerfilDTO(tutor);
+    }
+    private CustomTutorPerfilDTO convertToCustomPerfil(Tutor tutor) {
+        CustomTutorPerfilDTO dto = new CustomTutorPerfilDTO();
+
+        dto.setEspecialidad(tutor.getEspecialidad());
+        dto.setExperiencia(tutor.getExperiencia());
+        dto.setTarifaBase(tutor.getTarifaBase());
+
+        List<HorarioDTO> horarios = horarioRepository.findByTutorIdTutor(tutor.getIdTutor())
+                .stream().map(this::convertToHorarioDTO).collect(Collectors.toList());
+        dto.setHorarios(horarios);
+
+        return dto;
+    }
 
     private TutorPerfilDTO convertToPerfilDTO(Tutor tutor) {
         TutorPerfilDTO dto = new TutorPerfilDTO();
@@ -83,12 +138,10 @@ public class TutorServiceImpl implements TutorServices {
         dto.setExperiencia(tutor.getExperiencia());
         dto.setTarifaBase(tutor.getTarifaBase());
 
-        // Obtener los horarios del tutor
         List<HorarioDTO> horarios = horarioRepository.findByTutorIdTutor(tutor.getIdTutor())
                 .stream().map(this::convertToHorarioDTO).collect(Collectors.toList());
         dto.setHorarios(horarios);
 
-        // Obtener las valoraciones del tutor
         List<ValoracionDTO> valoraciones = valoracionTutorRepository.findByTutorIdTutor(tutor.getIdTutor())
                 .stream().map(this::convertToValoracionDTO).collect(Collectors.toList());
         dto.setValoraciones(valoraciones);

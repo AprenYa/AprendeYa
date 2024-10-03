@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface HorarioRepository extends JpaRepository<Horario, Integer> {
     List<Horario> findByTutorIdTutor(Integer idTutor);
+    void deleteByTutorIdTutor(Integer tutorId);
 }
