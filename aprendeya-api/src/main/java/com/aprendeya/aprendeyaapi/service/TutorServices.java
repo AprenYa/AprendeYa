@@ -12,5 +12,6 @@ public interface TutorServices {
     List<TutorPerfilDTO> findTutoresByFilters(String especialidad, Integer experiencia, BigDecimal tarifaBase);
     CustomTutorPerfilDTO actualizarPerfil(Integer idTutor, CustomTutorPerfilDTO tutorPerfilDTO);
     TutorPerfilDTO obtenerPerfil(Integer idTutor);
+
 }
 
