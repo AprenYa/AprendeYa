@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize// Permitir acceso a los endpoints de registro y login sin autenticación
 
                         .requestMatchers(antMatcher("/auth/registro")).permitAll()
-
+                        .requestMatchers(antMatcher("/api/usuarios/eliminar")).permitAll()
                         // Cualquier otra solicitud requiere autenticación
                         .anyRequest().authenticated()
                 )

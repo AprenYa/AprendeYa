@@ -6,10 +6,12 @@ import com.aprendeya.aprendeyaapi.model.entity.Alumno;
 import com.aprendeya.aprendeyaapi.model.entity.Padre;
 import com.aprendeya.aprendeyaapi.model.entity.Tutor;
 import com.aprendeya.aprendeyaapi.model.entity.Usuario;
+import com.aprendeya.aprendeyaapi.dto.DeleteUserRequestDTO;
 
 public interface UsuarioService {
     Usuario registerUser(UsuarioRegistroDTO registroDTO);
     Tutor registerTutor(Tutor tutor);
     Padre registerPadre(Padre padre);
     Alumno registerAlumno(Alumno alumno);
+    void deleteUser(DeleteUserRequestDTO deleteUserRequestDTO);
 }
