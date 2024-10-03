@@ -42,6 +42,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize// Permitir acceso a los endpoints de registro y login sin autenticación
 
                         .requestMatchers(antMatcher("/auth/registro")).permitAll()
+                        .requestMatchers(antMatcher("/alumnos/{id}")).permitAll()
                         .requestMatchers(antMatcher("/api/usuarios/eliminar")).permitAll()
                         .requestMatchers(antMatcher("/tutores/actualizar/{idTutor}")).permitAll()
                         .requestMatchers(antMatcher("/tutores/perfil/{idTutor}")).permitAll()

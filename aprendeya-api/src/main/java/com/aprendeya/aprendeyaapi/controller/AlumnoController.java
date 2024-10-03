@@ -22,4 +22,10 @@ public class AlumnoController {
         AlumnoResponseDTO alumnoResponseDTO = alumnoService.editarPerfil(alumnoPerfilRequestDTO, id);
         return new ResponseEntity<>(alumnoResponseDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarAlumno(@PathVariable int id){
+        alumnoService.eliminarPerfil(id);
+        return new ResponseEntity<>("El alumno se ha eliminado correctamente", HttpStatus.OK);
+    }
 }
