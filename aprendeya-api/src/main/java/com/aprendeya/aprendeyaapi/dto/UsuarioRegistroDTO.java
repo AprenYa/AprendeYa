@@ -1,5 +1,6 @@
 package com.aprendeya.aprendeyaapi.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ public class UsuarioRegistroDTO {
     private String apellido;
     private String email;
     private String contrasena;
+    @NotNull(message = "El tipo de usuario es obligatorio")
     private String tipoUsuario; // Enum como String
     private String grado; // Solo para estudiantes
     private String descripcion; // Solo para estudiantes

@@ -1,6 +1,7 @@
 package com.aprendeya.aprendeyaapi.repository;
 
 import com.aprendeya.aprendeyaapi.model.entity.Tutor;
+import com.aprendeya.aprendeyaapi.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,5 @@ public interface aTutorRepository extends JpaRepository<Tutor, Integer> {
     List<Tutor> findByFilters(@Param("especialidad") String especialidad,
                               @Param("experiencia") Integer experiencia,
                               @Param("tarifaBase") BigDecimal tarifaBase);
+    void deleteByUsuario(Usuario usuario);
 }
