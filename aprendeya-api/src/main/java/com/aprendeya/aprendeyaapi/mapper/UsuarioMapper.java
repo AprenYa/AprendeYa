@@ -1,6 +1,7 @@
 package com.aprendeya.aprendeyaapi.mapper;
 
 import com.aprendeya.aprendeyaapi.dto.UsuarioRegistroDTO;
+import com.aprendeya.aprendeyaapi.dto.DeleteUserRequestDTO;
 import com.aprendeya.aprendeyaapi.model.entity.Usuario;
 import com.aprendeya.aprendeyaapi.model.enums.TipoUsuario;
 import org.modelmapper.ModelMapper;
@@ -37,5 +38,13 @@ public class UsuarioMapper {
             return null;
         }
         return modelMapper.map(usuario, UsuarioRegistroDTO.class);
+    }
+    public Usuario toEntity(DeleteUserRequestDTO deleteUserRequestDTO) {
+        if (deleteUserRequestDTO == null) {
+            return null;
+        }
+        Usuario usuario = new Usuario();
+        usuario.setIdUsuario(deleteUserRequestDTO.getIdUsuario());
+        return usuario;
     }
 }

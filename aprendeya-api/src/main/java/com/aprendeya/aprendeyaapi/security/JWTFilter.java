@@ -24,7 +24,10 @@ public class JWTFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String bearerToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-
+        if ("/api/usuarios/eliminar".equals(bearerToken)) {
+            chain.doFilter(request, response);
+            return;
+        }
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             Authentication authentication = tokenProvider.getAuthentication(token);
