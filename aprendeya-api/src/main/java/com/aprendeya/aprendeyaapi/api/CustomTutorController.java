@@ -2,10 +2,12 @@ package com.aprendeya.aprendeyaapi.api;
 
 import com.aprendeya.aprendeyaapi.dto.TutorPerfilDTO;
 import com.aprendeya.aprendeyaapi.service.TutorServices;
+import com.aprendeya.aprendeyaapi.service.impl.TutorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -25,5 +27,12 @@ public class CustomTutorController {
     public ResponseEntity<TutorPerfilDTO> getTutorById(@PathVariable Integer id) {
         TutorPerfilDTO tutorPerfil = tutorService.getTutorById(id);
         return ResponseEntity.ok(tutorPerfil);
+    }
+    @GetMapping("/filtrar")
+    public List<TutorPerfilDTO> findTutoresByFilters(
+            @RequestParam(required = false) String especialidad,
+            @RequestParam(required = false) Integer experiencia,
+            @RequestParam(required = false) BigDecimal tarifaBase) {
+        return tutorService.findTutoresByFilters(especialidad, experiencia, tarifaBase);
     }
 }
