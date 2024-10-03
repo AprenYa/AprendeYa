@@ -4,12 +4,8 @@ import com.aprendeya.aprendeyaapi.dto.TutorPerfilRequestDTO;
 import com.aprendeya.aprendeyaapi.dto.TutorResponseDTO;
 import com.aprendeya.aprendeyaapi.exception.ResourceNotFoundException;
 import com.aprendeya.aprendeyaapi.mapper.TutorMapper;
-import com.aprendeya.aprendeyaapi.model.entity.Curso;
-import com.aprendeya.aprendeyaapi.model.entity.Sesion;
-import com.aprendeya.aprendeyaapi.model.entity.Tutor;
-import com.aprendeya.aprendeyaapi.repository.CursoRepository;
-import com.aprendeya.aprendeyaapi.repository.SesionRepository;
-import com.aprendeya.aprendeyaapi.repository.TutorRepository;
+import com.aprendeya.aprendeyaapi.model.entity.*;
+import com.aprendeya.aprendeyaapi.repository.*;
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +22,13 @@ public class TutorService {
     private final TutorRepository tutorRepository;
     private final CursoRepository cursoRepository;
     private final SesionRepository sesionRepository;
+    private final HorarioRepository horarioRepository;
+    private final InscripcionRepository inscripcionRepository;
+    private final PagoRepository pagoRepository;
+    private final ValoracionTutorRepository valoracionTutorRepository;
+    private final AsistenciaRepository asistenciaRepository;
+    private final EvaluacionRepository evaluacionRepository;
+    private final MaterialEducativoRepository materialEducativoRepository;
     private final TutorMapper tutorMapper;
     private final EntityManager entityManager;
 
@@ -67,5 +70,56 @@ public class TutorService {
             }
         }
         return tutorMapper.convertToListDTO(tutores);
+    }
+
+    @Transactional
+    public void eliminarPerfil(Integer id){
+
+        Tutor tutor = tutorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("El tutor no existe"));
+
+        List<Horario> horarios = horarioRepository.findByTutor(tutor);
+        if (!horarios.isEmpty()) {
+            horarioRepository.deleteAll(horarios);
+        }
+
+        List<Inscripcion> inscripciones = inscripcionRepository.findByTutor(tutor);
+        if (!inscripciones.isEmpty()) {
+            inscripcionRepository.deleteAll(inscripciones);
+        }
+
+        List<Pago> pagos = pagoRepository.findByTutor(tutor);
+        if (!pagos.isEmpty()) {
+            pagoRepository.deleteAll(pagos);
+        }
+
+        List<ValoracionTutor> valoracionTutores = valoracionTutorRepository.findByTutor(tutor);
+        if (!valoracionTutores.isEmpty()) {
+            valoracionTutorRepository.deleteAll(valoracionTutores);
+        }
+
+        List<Sesion> sesiones = sesionRepository.findByTutor(tutor);
+
+        for (Sesion sesion : sesiones) {
+            List<Asistencia> asistencias = asistenciaRepository.findBySesion(sesion);
+            if (!asistencias.isEmpty()) {
+                asistenciaRepository.deleteAll(asistencias);
+            }
+
+            List<Evaluacion> evaluaciones = evaluacionRepository.findBySesion(sesion);
+            if (!evaluaciones.isEmpty()) {
+                evaluacionRepository.deleteAll(evaluaciones);
+            }
+
+            List<MaterialEducativo> materialEducativos = materialEducativoRepository.findBySesion(sesion);
+            if (!materialEducativos.isEmpty()) {
+                materialEducativoRepository.deleteAll(materialEducativos);
+            }
+        }
+
+        if(!sesiones.isEmpty()){
+            sesionRepository.deleteAll(sesiones);
+        }
+
+        tutorRepository.deleteById(id);
     }
 }

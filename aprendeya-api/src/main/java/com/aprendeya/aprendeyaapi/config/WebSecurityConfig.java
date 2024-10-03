@@ -44,6 +44,7 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher("/auth/registro")).permitAll()
                         .requestMatchers(antMatcher("/alumnos/{id}")).permitAll()
                         .requestMatchers(antMatcher("/api/usuarios/eliminar")).permitAll()
+                        .requestMatchers(antMatcher("/tutores/{id}")).permitAll()
                         .requestMatchers(antMatcher("/tutores/actualizar/{idTutor}")).permitAll()
                         .requestMatchers(antMatcher("/tutores/perfil/{idTutor}")).permitAll()
                         // Cualquier otra solicitud requiere autenticación

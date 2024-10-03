@@ -30,4 +30,9 @@ public class TutorController {
         List<TutorResponseDTO> tutorResponseDTOS = tutorService.buscarTutoresPorMateria(nombreCurso);
         return new ResponseEntity<>(tutorResponseDTOS, HttpStatus.OK);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarTutor(@PathVariable int id){
+        tutorService.eliminarPerfil(id);
+        return new ResponseEntity<>("El tutor se ha eliminado correctamente", HttpStatus.OK);
+    }
 }
