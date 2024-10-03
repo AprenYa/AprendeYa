@@ -7,12 +7,13 @@ import com.aprendeya.aprendeyaapi.model.entity.Horario;
 import com.aprendeya.aprendeyaapi.model.entity.Tutor;
 import com.aprendeya.aprendeyaapi.model.entity.ValoracionTutor;
 import com.aprendeya.aprendeyaapi.repository.HorarioRepository;
-import com.aprendeya.aprendeyaapi.repository.TutorRepository;
 import com.aprendeya.aprendeyaapi.repository.ValoracionTutorRepository;
+import com.aprendeya.aprendeyaapi.repository.aTutorRepository;
 import com.aprendeya.aprendeyaapi.service.TutorServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 public class TutorServiceImpl implements TutorServices {
 
     @Autowired
-    private TutorRepository tutorRepository;
+    private aTutorRepository tutorRepository;
 
     @Autowired
     private HorarioRepository horarioRepository;
@@ -41,6 +42,38 @@ public class TutorServiceImpl implements TutorServices {
                 .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
         return convertToPerfilDTO(tutor);
     }
+
+    @Override
+    public List<TutorPerfilDTO> findTutoresByFilters(String especialidad, Integer experiencia, BigDecimal tarifaBase) {
+        // Obtiene todos los tutores
+        List<Tutor> tutores = tutorRepository.findAll();
+
+        // Aplica los filtros condicionalmente
+        if (especialidad != null && !especialidad.isEmpty()) {
+            tutores = tutores.stream()
+                    .filter(tutor -> tutor.getEspecialidad().equalsIgnoreCase(especialidad))
+                    .collect(Collectors.toList());
+        }
+
+        if (experiencia != null) {
+            tutores = tutores.stream()
+                    .filter(tutor -> tutor.getExperiencia().equals(experiencia))
+                    .collect(Collectors.toList());
+        }
+
+        if (tarifaBase != null) {
+            tutores = tutores.stream()
+                    .filter(tutor -> tutor.getTarifaBase().compareTo(tarifaBase) == 0)
+                    .collect(Collectors.toList());
+        }
+
+        // Convertir la lista de tutores a DTO
+        return tutores.stream()
+                .map(this::convertToPerfilDTO)
+                .collect(Collectors.toList());
+    }
+
+
 
     private TutorPerfilDTO convertToPerfilDTO(Tutor tutor) {
         TutorPerfilDTO dto = new TutorPerfilDTO();
