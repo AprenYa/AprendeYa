@@ -16,4 +16,6 @@ public interface SesionRepository extends JpaRepository<Sesion, Integer>  {
 
     List<Sesion> findByTutor(Tutor tutor);
 
+    @Query("SELECT s.tutor FROM Sesion s WHERE s.curso =:curso AND s.tutor=:tutor")
+    Tutor buscarTutor(@Param("curso") Curso curso, @Param("tutor") Tutor tutor);
 }
