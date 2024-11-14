@@ -39,6 +39,7 @@ public class WebSecurityConfig {
                                 "/token",
                                 "/tutores/actualizar/{idTutor}",
                                 "/tutores/perfil/{idTutor}",
+                                "/asistencias",
                                 "/api/usuarios/login").permitAll() // Rutas públicas
                         .anyRequest().authenticated() // Todas las demás requieren autenticación
                 )
