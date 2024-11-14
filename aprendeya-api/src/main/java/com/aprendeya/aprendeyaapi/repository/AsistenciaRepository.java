@@ -12,4 +12,6 @@ public interface AsistenciaRepository extends JpaRepository<Asistencia, Integer>
     List<Asistencia> findByAlumno(Alumno alumno);
 
     List<Asistencia> findBySesion(Sesion sesion);
+
+    Asistencia findByAlumnoAndSesion(Alumno alumno, Sesion sesion);
 }
