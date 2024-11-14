@@ -6,6 +6,7 @@ import com.aprendeya.aprendeyaapi.model.entity.Usuario;
 import com.aprendeya.aprendeyaapi.model.enums.TipoUsuario;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import com.aprendeya.aprendeyaapi.dto.UsuarioDTO;
 
 @Component
 public class UsuarioMapper {
@@ -46,5 +47,9 @@ public class UsuarioMapper {
         Usuario usuario = new Usuario();
         usuario.setIdUsuario(deleteUserRequestDTO.getIdUsuario());
         return usuario;
+    }
+
+    public UsuarioDTO convertToDTO(Usuario usuario){
+        return modelMapper.map(usuario, UsuarioDTO.class);
     }
 }
