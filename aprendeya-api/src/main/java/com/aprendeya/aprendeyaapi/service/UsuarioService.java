@@ -1,6 +1,8 @@
 
 package com.aprendeya.aprendeyaapi.service;
 
+import com.aprendeya.aprendeyaapi.dto.SesionDTO;
+import com.aprendeya.aprendeyaapi.dto.UsuarioDTO;
 import com.aprendeya.aprendeyaapi.dto.UsuarioRegistroDTO;
 import com.aprendeya.aprendeyaapi.model.entity.Alumno;
 import com.aprendeya.aprendeyaapi.model.entity.Padre;
@@ -14,4 +16,6 @@ public interface UsuarioService {
     Padre registerPadre(Padre padre);
     Alumno registerAlumno(Alumno alumno);
     void deleteUser(DeleteUserRequestDTO deleteUserRequestDTO);
+    boolean iniciarSesion(SesionDTO sesionDTO);
+    UsuarioDTO buscarUsuarioPorEmail(String email);
 }

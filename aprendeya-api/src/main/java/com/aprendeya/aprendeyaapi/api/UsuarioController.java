@@ -1,9 +1,11 @@
 package com.aprendeya.aprendeyaapi.api;
 
 import com.aprendeya.aprendeyaapi.dto.DeleteUserRequestDTO;
+import com.aprendeya.aprendeyaapi.dto.SesionDTO;
 import com.aprendeya.aprendeyaapi.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,5 +27,9 @@ public class UsuarioController {
         usuarioService.deleteUser(requestDTO);
         return ResponseEntity.ok("Usuario eliminado con éxito.");
     }
-
+    @GetMapping("/login")
+    public ResponseEntity<String> inicioSesion(@Validated @RequestBody SesionDTO sesionDTO) {
+        boolean sesion = usuarioService.iniciarSesion(sesionDTO);
+        return ResponseEntity.ok("Inicio de sesion exitoso");
+    }
 }

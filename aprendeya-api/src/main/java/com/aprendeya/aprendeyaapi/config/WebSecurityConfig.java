@@ -1,75 +1,67 @@
 package com.aprendeya.aprendeyaapi.config;
 
-import com.aprendeya.aprendeyaapi.security.JWTConfigurer;
-import com.aprendeya.aprendeyaapi.security.JWTFilter;
-import com.aprendeya.aprendeyaapi.security.JwtAuthenticationEntryPoint;
-import com.aprendeya.aprendeyaapi.security.TokenProvider;
+import com.aprendeya.aprendeyaapi.security.JWTAuthenticationFilter;
+import com.aprendeya.aprendeyaapi.security.JWTAuthorizationFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
-@RequiredArgsConstructor
-@EnableWebSecurity
-@EnableMethodSecurity //Importante para anotaciones @PreAuthorize
+@AllArgsConstructor
 public class WebSecurityConfig {
 
-    private final TokenProvider tokenProvider;
-    private final JWTFilter jwtRequestFilter;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-
+    private final UserDetailsService userDetailsService;
+    private final JWTAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+        JWTAuthenticationFilter jwtAuthenticationFilter = new JWTAuthenticationFilter();
+        jwtAuthenticationFilter.setAuthenticationManager(authManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/token");
+
         http
-                .cors(Customizer.withDefaults()) // Habilitar CORS
-                .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF en APIs REST
-                .authorizeHttpRequests(authorize -> authorize// Permitir acceso a los endpoints de registro y login sin autenticación
-
-                        .requestMatchers(antMatcher("/auth/registro")).permitAll()
-                        .requestMatchers(antMatcher("/alumnos/{id}")).permitAll()
-                        .requestMatchers(antMatcher("/api/usuarios/eliminar")).permitAll()
-                        .requestMatchers(antMatcher("/tutores/{id}")).permitAll()
-                        .requestMatchers(antMatcher("/tutores/actualizar/{idTutor}")).permitAll()
-                        .requestMatchers(antMatcher("/tutores/perfil/{idTutor}")).permitAll()
-                        // Cualquier otra solicitud requiere autenticación
-                        .anyRequest().authenticated()
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/registro",
+                                "/alumnos/{id}",
+                                "/api/usuarios/eliminar",
+                                "/tutores/{id}",
+                                "/token",
+                                "/tutores/actualizar/{idTutor}",
+                                "/tutores/perfil/{idTutor}",
+                                "/api/usuarios/login").permitAll() // Rutas públicas
+                        .anyRequest().authenticated() // Todas las demás requieren autenticación
                 )
-                .httpBasic(Customizer.withDefaults())
-                .formLogin(AbstractHttpConfigurer::disable)
-                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .sessionManagement(h -> h.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .with(new JWTConfigurer(tokenProvider), Customizer.withDefaults());
-        //.httpBasic(Customizer.withDefaults()); // Utilizar autenticación básica HTTP para pruebas con Postman
-
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authBuilder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+        return authBuilder.build();
     }
 }

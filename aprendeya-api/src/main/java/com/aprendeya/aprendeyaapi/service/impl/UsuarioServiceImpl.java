@@ -1,11 +1,10 @@
 package com.aprendeya.aprendeyaapi.service.impl;
 
 import com.aprendeya.aprendeyaapi.dto.DeleteUserRequestDTO;
+import com.aprendeya.aprendeyaapi.dto.SesionDTO;
+import com.aprendeya.aprendeyaapi.dto.UsuarioDTO;
 import com.aprendeya.aprendeyaapi.dto.UsuarioRegistroDTO;
-import com.aprendeya.aprendeyaapi.exception.TipoUsuarioNoValidoException;
-import com.aprendeya.aprendeyaapi.exception.UserNotFoundException;
-import com.aprendeya.aprendeyaapi.exception.UsuarioYaRegistradoException;
-import com.aprendeya.aprendeyaapi.exception.AlumnoNoValidoException;
+import com.aprendeya.aprendeyaapi.exception.*;
 import com.aprendeya.aprendeyaapi.model.entity.Alumno;
 import com.aprendeya.aprendeyaapi.model.entity.Padre;
 import com.aprendeya.aprendeyaapi.model.entity.Tutor;
@@ -30,6 +29,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final aTutorRepository aTutorRepository;
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
+    private final UsuarioRepository userRepository;
 
     @Transactional
     @Override
@@ -142,7 +142,31 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioRepository.delete(usuario);
     }
 
+    @Transactional
+    public boolean iniciarSesion(SesionDTO sesionDTO){
 
+        Usuario usuario = userRepository.inicioSesionUsuario(sesionDTO.getEmail());
+
+        if(usuario == null){
+            throw new ResourceNotFoundException("El usuario no existe");
+        }
+        else{
+            if(passwordEncoder.matches(sesionDTO.getContraseña(), usuario.getContrasena())){
+                return true;
+            }
+            else{
+                throw new ResourceNotFoundException("La contraseña es incorrecta");
+            }
+        }
+    }
+
+    public UsuarioDTO buscarUsuarioPorEmail(String email) {
+        Usuario usuario= userRepository.findOneByEmail(email)
+                .orElseThrow(ResourceNotFoundException::new);
+
+
+        return usuarioMapper.convertToDTO(usuario);
+    }
 
 
 
