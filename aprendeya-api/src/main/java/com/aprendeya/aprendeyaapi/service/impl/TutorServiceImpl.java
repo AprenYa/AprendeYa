@@ -8,8 +8,8 @@ import com.aprendeya.aprendeyaapi.model.entity.Horario;
 import com.aprendeya.aprendeyaapi.model.entity.Tutor;
 import com.aprendeya.aprendeyaapi.model.entity.ValoracionTutor;
 import com.aprendeya.aprendeyaapi.repository.HorarioRepository;
+import com.aprendeya.aprendeyaapi.repository.TutorRepository;
 import com.aprendeya.aprendeyaapi.repository.ValoracionTutorRepository;
-import com.aprendeya.aprendeyaapi.repository.aTutorRepository;
 import com.aprendeya.aprendeyaapi.service.TutorServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class TutorServiceImpl implements TutorServices {
 
     @Autowired
-    private aTutorRepository tutorRepository;
+    private TutorRepository tutorRepository;
 
     @Autowired
     private HorarioRepository horarioRepository;

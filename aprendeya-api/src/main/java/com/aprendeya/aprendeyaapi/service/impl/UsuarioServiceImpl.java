@@ -26,7 +26,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UserRepository usuarioRepository;
     private final StudentRepository studentRepository;
     private final PadreRepository padreRepository;
-    private final aTutorRepository aTutorRepository;
+    private final TutorRepository tutorRepository;
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository userRepository;
@@ -75,7 +75,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 tutor.setEspecialidad(registroDTO.getEspecialidad());
                 tutor.setExperiencia(registroDTO.getExperiencia());
                 tutor.setTarifaBase(registroDTO.getTarifaBase());
-                aTutorRepository.save(tutor);
+                tutorRepository.save(tutor);
                 break;
 
             default:
@@ -88,7 +88,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Tutor registerTutor(Tutor tutor) {
         // Implementa el registro de tutor si es necesario
-        return aTutorRepository.save(tutor);
+        return tutorRepository.save(tutor);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 padreRepository.deleteByUsuario(usuario);
                 break;
             case DOCENTE:
-                aTutorRepository.deleteByUsuario(usuario);
+                tutorRepository.deleteByUsuario(usuario);
                 break;
             default:
                 throw new IllegalArgumentException("Tipo de usuario no válido");
