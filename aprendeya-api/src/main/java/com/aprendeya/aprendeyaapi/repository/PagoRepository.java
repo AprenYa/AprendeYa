@@ -12,4 +12,6 @@ public interface PagoRepository extends JpaRepository<Pago, Integer> {
     List<Pago> findByAlumno(Alumno alumno);
 
     List<Pago> findByTutor(Tutor tutor);
+
+    Pago findById(int id);
 }
