@@ -2,12 +2,11 @@ package com.aprendeya.aprendeyaapi.service.impl;
 
 import com.aprendeya.aprendeyaapi.dto.PagoRequestDTO;
 import com.aprendeya.aprendeyaapi.dto.PagoResponseDTO;
+import com.aprendeya.aprendeyaapi.dto.PaypalResponseDTO;
 import com.aprendeya.aprendeyaapi.exception.ResourceNotFoundException;
 import com.aprendeya.aprendeyaapi.mapper.PagoMapper;
-import com.aprendeya.aprendeyaapi.model.entity.Alumno;
-import com.aprendeya.aprendeyaapi.model.entity.Curso;
-import com.aprendeya.aprendeyaapi.model.entity.Pago;
-import com.aprendeya.aprendeyaapi.model.entity.Tutor;
+import com.aprendeya.aprendeyaapi.model.entity.*;
+import com.aprendeya.aprendeyaapi.model.enums.EstadoInscripcion;
 import com.aprendeya.aprendeyaapi.model.enums.EstadoPago;
 import com.aprendeya.aprendeyaapi.repository.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +25,7 @@ public class PagosService {
     private final SesionRepository sesionRepository;
     private final PagoRepository pagoRepository;
     private final PagoMapper pagoMapper;
+    private final InscripcionRepository inscripcionRepository;
 
     @Transactional
     public PagoResponseDTO notificarPago(PagoRequestDTO pagoRequestDTO) {
@@ -35,7 +35,7 @@ public class PagosService {
 
 
         if (curso == null || alumno == null || tutor == null) {
-            throw new ResourceNotFoundException("El curso o el alumno no existe");
+            throw new ResourceNotFoundException("El curso, el alumno o el tutor no existe");
         }
         else{
             Tutor tutorCurso = sesionRepository.buscarTutor(curso, tutor);
@@ -48,6 +48,15 @@ public class PagosService {
                 pago.setFechaPago(LocalDate.now());
                 pagoRepository.save(pago);
 
+                Inscripcion inscripcion = new Inscripcion();
+                inscripcion.setCurso(curso);
+                inscripcion.setAlumno(alumno);
+                inscripcion.setTutor(tutor);
+                inscripcion.setFechaInscripcion(LocalDate.now());
+                inscripcion.setEstado_inscripcion(EstadoInscripcion.RESERVADA);
+                inscripcion.setPago(pago);
+                inscripcionRepository.save(inscripcion);
+
                 return pagoMapper.convertToDTO(pago);
             }
             else{
@@ -56,4 +65,31 @@ public class PagosService {
         }
     }
 
+    @Transactional
+    public PaypalResponseDTO verificarPago(int idPago) {
+        Pago pago = pagoRepository.findById(idPago);
+
+        if (pago == null) {
+            throw new ResourceNotFoundException("El pago no existe");
+        }
+        else{
+            pago.setEstado(EstadoPago.COMPLETADO);
+            pagoRepository.save(pago);
+            Inscripcion inscripcion = inscripcionRepository.findByPago(pago);
+            if (inscripcion == null) {
+                throw new ResourceNotFoundException("No hay inscripcion vinvulada a este pago");
+            }
+            else{
+                inscripcion.setEstado_inscripcion(EstadoInscripcion.CONFIRMADA);
+                inscripcionRepository.save(inscripcion);
+
+                PaypalResponseDTO paypalResponseDTO = new PaypalResponseDTO();
+                paypalResponseDTO.setPago(pago);
+                paypalResponseDTO.setCurso(inscripcion.getCurso());
+
+                return paypalResponseDTO;
+            }
+        }
+
+    }
 }
