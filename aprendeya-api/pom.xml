@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hampcode</groupId>
-    <artifactId>bookhub-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>bookhub-api</name>
-    <description>bookhub-api</description>
+    <artifactId>aprendeya-api</artifactId>
+    <version>0.0.1</version>
+    <name>aprenya-api</name>
+    <description>aprendeya-api</description>
     <url/>
     <licenses>
         <license/>
